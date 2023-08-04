@@ -150,13 +150,15 @@ impl<'a> Indexer<'a> {
     {
         for (source_root, source_path, strict) in iter_files_and_directories(source_paths) {
             cancellation_flag.check("indexing all files")?;
-            self.index_file(
+            if let Err(e) = self.index_file(
                 &source_root,
                 &source_path,
                 strict,
                 &mut continue_from,
                 cancellation_flag,
-            )?;
+            ) {
+                println!("Failed to index file {:?}: {:?}", source_path, e)
+            }
         }
         Ok(())
     }
